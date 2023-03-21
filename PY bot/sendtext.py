@@ -15,7 +15,7 @@ def home():
 
 def run_script():
     recipient = '6154892677'  # Update with your recipient's phone number
-    sms_api_key = os.environ['SMS_API_KEY']  # Get the SMS API key from environment variables
+    sms_api_key = 'nwaouwtmezmuzhxr'  # Get the SMS API key from environment variables
 
     while True:
         url = "https://loyalty.yotpo.com/api/v1/customer_details?customer_email=lukee249%40outlook.com&customer_external_id=5755791442114&merchant_id=58315"
