@@ -13,6 +13,7 @@ current_stats = None
 
 @app.route("/")
 def home():
+    global current_stats
     if current_stats is None:
         message = "Please wait for the script to run at least once"
     else:
