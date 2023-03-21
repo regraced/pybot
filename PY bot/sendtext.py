@@ -11,17 +11,7 @@ app = Flask(__name__)
 
 current_stats = None
 
-@app.route("/")
-def home():
-    global current_stats
-    if current_stats is None:
-        message = "Please wait for the script to run at least once"
-    else:
-        message = f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
-
-    return render_template("index.html", message=message, css=url_for("static", filename="styles.css"))
-
-
+@app.before_first_request
 def run_script():
     global current_stats
     recipient = '6154892677'  # Update with your recipient's phone number
@@ -78,11 +68,12 @@ def run_script():
 
         time.sleep(3600)
 
-def run_flask():
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+@app.route("/")
+def home():
+    global current_stats
+    if current_stats is None:
+        message = "Please wait for the script to run at least once"
+    else:
+        message = f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
 
-if __name__ == '__main__':
-    script_thread = threading.Thread(target=run_script)
-    script_thread.start()
-    run_flask()
+    return render_template("index.html", message=message, css=url_for("static", filename="styles.css"))
