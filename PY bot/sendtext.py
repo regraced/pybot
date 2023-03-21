@@ -58,5 +58,10 @@ while True:
     else:
         print('\n\nno update\n')
     time.sleep(300)
+    
+    if __name__ == '__main__':
+        port = int(os.environ.get('PORT', 5000))
+        app.run(host='54.165.58.209', port=port)
+
 
 
