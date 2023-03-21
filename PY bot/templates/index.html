@@ -5,7 +5,7 @@
     <title>My Flask App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" integrity="sha384-V+sJaVctpfA1G2ZVAgJcB9Y7lF+dLLJdA7xLm+H2GJmM3uzokD6aZvI1Zb/vRnN" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v={{ time.time() }}">
 </head>
 <body>
     <div class="container">
