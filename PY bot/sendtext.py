@@ -36,13 +36,13 @@ def update_stats():
     }
 
 def run_script():
+    global current_stats
     recipient = '6154892677'  # Update with your recipient's phone number
     sms_api_key = 'nwaouwtmezmuzhxr'  # Get the SMS API key from environment variables
 
-    # Run once to update current_stats
-    update_stats()
-
     while True:
+        update_stats()
+        
         with open('log.json', 'r') as log:
             last_session = json.load(log)
 
@@ -78,9 +78,7 @@ def run_script():
         else:
             print('\n\nno update\n')
 
-        # Update current_stats every hour
         time.sleep(30)
-        update_stats()
 
 def run_flask():
     port = int(os.environ.get('PORT', 5000))
