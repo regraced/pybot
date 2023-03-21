@@ -5,7 +5,7 @@ import time
 from datetime import date
 import os
 import threading
-from flask import Flask
+from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
 
@@ -13,10 +13,13 @@ current_stats = None
 
 @app.route("/")
 def home():
-     if current_stats is None:
-        return "Please wait for the script to run at least once"
-     else:
-        return f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
+    if current_stats is None:
+        message = "Please wait for the script to run at least once"
+    else:
+        message = f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
+
+    return render_template("index.html", message=message, css=url_for("static", filename="styles.css"))
+
 
 def run_script():
     global current_stats
