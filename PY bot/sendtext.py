@@ -9,11 +9,17 @@ from flask import Flask
 
 app = Flask(__name__)
 
+current_stats = None
+
 @app.route("/")
 def home():
-    return "Hello, World!"
+     if current_stats is None:
+        return "Please wait for the script to run at least once"
+    else:
+        return f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
 
 def run_script():
+    global current_stats
     recipient = '6154892677'  # Update with your recipient's phone number
     sms_api_key = 'nwaouwtmezmuzhxr'  # Get the SMS API key from environment variables
 
