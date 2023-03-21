@@ -79,7 +79,7 @@ def run_script():
             print('\n\nno update\n')
 
         # Update current_stats every hour
-        time.sleep(3600)
+        time.sleep(30)
         update_stats()
 
 def run_flask():
