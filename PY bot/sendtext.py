@@ -15,7 +15,7 @@ current_stats = None
 def home():
      if current_stats is None:
         return "Please wait for the script to run at least once"
-    else:
+     else:
         return f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
 
 def run_script():
