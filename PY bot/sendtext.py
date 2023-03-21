@@ -22,7 +22,9 @@ def add_header(response):
 def home():
     if current_stats is None:
         message = "Please wait for the script to run at least once"
+        print("Idk why this isnt working")
     else:
+        print("For some reason this wont update!")
         message = f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
 
     return render_template("index.html", message=message, css=url_for("static", filename="styles.css"))
