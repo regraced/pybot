@@ -66,7 +66,7 @@ def run_script():
         else:
             print('\n\nno update\n')
 
-        time.sleep(10)
+        time.sleep(3600)
 
 def run_flask():
     port = int(os.environ.get('PORT', 5000))
