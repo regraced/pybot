@@ -5,6 +5,9 @@ import time
 from datetime import date
 import os
 
+recipient = '6154892677'  # Update with your recipient's phone number
+sms_api_key = os.environ['SMS_API_KEY']  # Get the SMS API key from environment variables
+
 url = "https://loyalty.yotpo.com/api/v1/customer_details?customer_email=lukee249%40outlook.com&customer_external_id=5755791442114&merchant_id=58315"
 s = requests.get(url)
 d1 = json.dumps(s.json())
@@ -17,9 +20,6 @@ current_stats = {
     'Referrals:':referrals,
     'Rewards:':dollarPtBal   
 }
-'''
-with open('log.json','r') as log:
-    last_session = json.load(log)'''
 
 while True:
 
@@ -33,7 +33,7 @@ while True:
             if int(reward_diff) != 0:
                 print("Text sent!")
                 print(reward_diff,dollarPtBal)
-                SMS.send(api_key=os.environ['SMS_API_KEY'], message=f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}', recipients=[recipient])
+                SMS.send(api_key=sms_api_key, message=f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}', recipients=[recipient])
 
         else:
             log = open('log.json','w').close() #Clears file
@@ -57,11 +57,5 @@ while True:
             
     else:
         print('\n\nno update\n')
+        
     time.sleep(300)
-    
-    if __name__ == '__main__':
-        port = int(os.environ.get('PORT', 5000))
-        app.run(host='54.165.58.209', port=port)
-
-
-
