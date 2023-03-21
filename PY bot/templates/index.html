@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>My App</title>
-    <link rel="stylesheet" href="{{ css }}">
+    <head>
+    <meta charset="utf-8">
+    <title>My Flask App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" integrity="sha384-V+sJaVctpfA1G2ZVAgJcB9Y7lF+dLLJdA7xLm+H2GJmM3uzokD6aZvI1Zb/vRnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>{{ message }}</h1>
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-8">
+                <h1 class="text-center">My Flask App</h1>
+                {% if current_stats is None %}
+                    <p class="text-center">Please wait for the script to run at least once</p>
+                {% else %}
+                    <p class="text-center">Date: {{ current_stats['Date'] }}, Referrals: {{ current_stats['Referrals:'] }}, Rewards: {{ current_stats['Rewards:'] }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-hDv0VVZiwnjKoET3N3mE0v/kP9o/wT/SMj1zT0ZbOwZm/pWQfQYmJjSwmvpvOH8" crossorigin="anonymous"></script>
 </body>
 </html>
