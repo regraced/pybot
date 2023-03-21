@@ -3,6 +3,7 @@ import requests
 import json
 import time
 from datetime import date
+import os
 
 url = "https://loyalty.yotpo.com/api/v1/customer_details?customer_email=lukee249%40outlook.com&customer_external_id=5755791442114&merchant_id=58315"
 s = requests.get(url)
@@ -32,7 +33,7 @@ while True:
             if int(reward_diff) != 0:
                 print("Text sent!")
                 print(reward_diff,dollarPtBal)
-                SMS.send(f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}')
+                SMS.send(api_key=os.environ['SMS_API_KEY'], message=f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}', recipients=[recipient])
 
         else:
             log = open('log.json','w').close() #Clears file
