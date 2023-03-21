@@ -28,7 +28,7 @@ def home():
         print("For some reason this wont update!",flush=True)
         message = f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
 
-    return render_template("index.html", message=message, css=url_for("static", filename="styles.css"), time=time)
+    return render_template("index.html", message=message, css=url_for("static", filename="styles.css"), time=time, current_stats=current_stats)
 
 def update_stats():
     global current_stats
