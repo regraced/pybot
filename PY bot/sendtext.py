@@ -5,7 +5,8 @@ import time
 from datetime import date
 import os
 import threading
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, jsonify
+
 
 app = Flask(__name__)
 
@@ -27,7 +28,7 @@ def home():
         print("For some reason this wont update!",flush=True)
         message = f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
 
-    return render_template("index.html", message=message, css=url_for("static", filename="styles.css"))
+    return render_template("index.html", message=message, css=url_for("static", filename="styles.css"), time=time)
 
 def update_stats():
     global current_stats
