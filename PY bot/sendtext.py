@@ -21,13 +21,8 @@ def add_header(response):
 
 @app.route("/")
 def home():
-    if current_stats is None:
-        message = "Please wait for the script to run at least once"
-        print("Idk why this isnt working",flush=True)
-    else:
-        print("For some reason this wont update!",flush=True)
+    if current_stats is not None:
         message = f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
-
     return render_template("index.html", message=message, css=url_for("static", filename="styles.css"), time=time, current_stats=current_stats)
 
 def update_stats():
@@ -45,14 +40,19 @@ def run_script():
 
     while True:
         dollarPtBal, referrals, todaydate = update_stats()
+        current_stats = {
+                'Date':todaydate,
+                'Referrals:':referrals,
+                'Rewards:':dollarPtBal   
+            }
         
         with open('log.json', 'r') as log:
             last_session = json.load(log)
-
+            print(last_session," Last session")
+        print(current_stats, "Current sesison")
         if current_stats != last_session:
             if last_session.get('Rewards:'):
                 reward_diff = dollarPtBal - last_session['Rewards:']
-                referral_diff = referrals - int(last_session['Referrals:'])
                 if int(reward_diff) != 0:
                     print("Text sent!")
                     print(reward_diff, dollarPtBal)
@@ -62,8 +62,7 @@ def run_script():
                 log = open('log.json', 'w').close()  # Clears file
 
                 with open('log.json', 'a') as log:
-                    log.write(json.dumps(current_stats, indent=4, sort_keys=True, default=str))
-                    log.flush()
+                    log.write(json.dumps(last_session, indent=4, sort_keys=True, default=str))
                 with open('log.json', 'r') as log:  # Opening in read to reset last_session to proper val
                     last_session = json.load(log)
 
@@ -71,28 +70,19 @@ def run_script():
 
             with open('ref.txt', 'a') as ref:  # Adds outdated info to txt for reference
                 ref.write(f"{str(last_session)},\n")
-                ref.flush()
-                ref.close()
                 print("\nRef updated")
 
             log = open('log.json', 'w').close()
 
-            current_stats = {
-                'Date':todaydate,
-                'Referrals:':referrals,
-                'Rewards:':dollarPtBal   
-            }
-
             with open('log.json', 'a') as log:
                 log.write(json.dumps(current_stats, indent=4, sort_keys=True, default=str))
-                log.flush()
-                log.close()
                 print("Updated json\n")
 
         else:
             print('\n\nno update\n')
 
         time.sleep(1800)
+
         
 def run_flask():
     port = int(os.environ.get('PORT', 5000))
