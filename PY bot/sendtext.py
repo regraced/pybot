@@ -43,7 +43,6 @@ def update_stats():
 def run_script():
     global current_stats
     recipient = '6154892677'  # Update with your recipient's phone number
-    sms_api_key = 'nwaouwtmezmuzhxr'  # Get the SMS API key from environment variables
 
     while True:
         dollarPtBal, referrals, todaydate = update_stats()
@@ -58,7 +57,7 @@ def run_script():
                 if int(reward_diff) != 0:
                     print("Text sent!")
                     print(reward_diff, dollarPtBal)
-                    SMS.send(api_key=sms_api_key, message=f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}', recipients=[recipient])
+                    SMS.send(message=f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}', recipients=[recipient])
 
             else:
                 log = open('log.json', 'w').close()  # Clears file
