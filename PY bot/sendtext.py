@@ -63,6 +63,7 @@ def run_script():
 
                 with open('log.json', 'a') as log:
                     log.write(json.dumps(current_stats, indent=4, sort_keys=True, default=str))
+                    log.flush()
                 with open('log.json', 'r') as log:  # Opening in read to reset last_session to proper val
                     last_session = json.load(log)
 
@@ -70,6 +71,8 @@ def run_script():
 
             with open('ref.txt', 'a') as ref:  # Adds outdated info to txt for reference
                 ref.write(f"{str(last_session)},\n")
+                ref.flush()
+                ref.close()
                 print("\nRef updated")
 
             log = open('log.json', 'w').close()
@@ -82,6 +85,8 @@ def run_script():
 
             with open('log.json', 'a') as log:
                 log.write(json.dumps(current_stats, indent=4, sort_keys=True, default=str))
+                log.flush()
+                log.close()
                 print("Updated json\n")
 
         else:
