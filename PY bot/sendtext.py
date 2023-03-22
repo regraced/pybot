@@ -42,7 +42,6 @@ def update_stats():
 
 def run_script():
     global current_stats
-    recipient = '6154892677'  # Update with your recipient's phone number
 
     while True:
         dollarPtBal, referrals, todaydate = update_stats()
