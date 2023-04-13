@@ -5,10 +5,13 @@ import time
 from datetime import date
 import os
 import threading
+import psycopg2
 from flask import Flask, render_template, url_for, jsonify
 
 
 app = Flask(__name__)
+db_url = os.getenv("DATABASE_URL")
+conn = psycopg2.connect(db_url)
 
 current_stats = None
 
@@ -45,11 +48,14 @@ def run_script():
                 'Referrals:':referrals,
                 'Rewards:':dollarPtBal   
             }
-        
-        with open('log.json', 'r') as log:
-            last_session = json.load(log)
-            print(last_session," Last session")
-        print(current_stats, "Current sesison")
+
+        with conn.cursor() as cur:
+            cur.execute("SELECT data FROM stats ORDER BY id DESC LIMIT 1;")
+            last_session = cur.fetchone()[0]
+            print(last_session, "Last session")
+
+        print(current_stats, "Current session")
+
         if current_stats != last_session:
             if last_session.get('Rewards:'):
                 reward_diff = dollarPtBal - last_session['Rewards:']
@@ -58,31 +64,15 @@ def run_script():
                     print(reward_diff, dollarPtBal)
                     SMS.send(message=f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}')
 
-            else:
-                log = open('log.json', 'w').close()  # Clears file
-
-                with open('log.json', 'a') as log:
-                    log.write(json.dumps(last_session, indent=4, sort_keys=True, default=str))
-                with open('log.json', 'r') as log:  # Opening in read to reset last_session to proper val
-                    last_session = json.load(log)
-
-                print("\n\n--Last session JSON not valid, wrote new.--")
-
-            with open('ref.txt', 'a') as ref:  # Adds outdated info to txt for reference
-                ref.write(f"{str(last_session)},\n")
-                print("\nRef updated")
-
-            log = open('log.json', 'w').close()
-
-            with open('log.json', 'a') as log:
-                log.write(json.dumps(current_stats, indent=4, sort_keys=True, default=str))
-                print("Updated json\n")
+            with conn.cursor() as cur:
+                cur.execute("INSERT INTO stats (data) VALUES (%s);", (json.dumps(current_stats),))
+                conn.commit()
+                print("Updated stats\n")
 
         else:
             print('\n\nno update\n')
 
         time.sleep(1800)
-
         
 def run_flask():
     port = int(os.environ.get('PORT', 5000))
