@@ -31,6 +31,15 @@ def home():
         message = f"Date: {current_stats['Date']}, Referrals: {current_stats['Referrals:']}, Rewards: {current_stats['Rewards:']}"
     return render_template("index.html", message=message, css=url_for("static", filename="styles.css"), time=time, current_stats=current_stats)
 
+@app.route("/all_data")
+def all_data():
+    with conn.cursor() as cur:
+        cur.execute("SELECT data FROM stats;")
+        fetched_data = cur.fetchall()
+
+    all_stats = [row[0] for row in fetched_data]
+    return jsonify(all_stats)
+
 def update_stats():
     url = "https://loyalty.yotpo.com/api/v1/customer_details?customer_email=lukee249%40outlook.com&customer_external_id=5755791442114&merchant_id=58315"
     s = requests.get(url)
