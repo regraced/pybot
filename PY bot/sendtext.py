@@ -4,15 +4,17 @@ import json
 import time
 from datetime import date
 import os
+import urllib.parse
 import threading
 import psycopg2
 from flask import Flask, render_template, url_for, jsonify
 
 
 app = Flask(__name__)
-db_url = os.getenv("postgres://jwympooi:QcfCC9ajhnYeAF2E5IyiyrGkXcncDGZq@lallah.db.elephantsql.com/jwympooi")
+elephantsql_url = os.environ["postgres://jwympooi:QcfCC9ajhnYeAF2E5IyiyrGkXcncDGZq@lallah.db.elephantsql.com/jwympooi"]
+url = urllib.parse.urlparse(elephantsql_url)
+db_url = f"dbname={url.path[1:]} user={url.username} password={url.password} host={url.hostname} port={url.port}"
 conn = psycopg2.connect(db_url)
-
 current_stats = None
 
 @app.after_request
