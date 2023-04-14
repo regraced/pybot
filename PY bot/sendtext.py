@@ -10,7 +10,7 @@ from flask import Flask, render_template, url_for, jsonify
 
 
 app = Flask(__name__)
-db_url = os.getenv("DATABASE_URL")
+db_url = os.getenv("postgres://jwympooi:QcfCC9ajhnYeAF2E5IyiyrGkXcncDGZq@lallah.db.elephantsql.com/jwympooi")
 conn = psycopg2.connect(db_url)
 
 current_stats = None
@@ -72,8 +72,8 @@ def run_script():
         else:
             print('\n\nno update\n')
 
-        time.sleep(10)
-        
+        time.sleep(1800)
+
 def run_flask():
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
