@@ -54,11 +54,13 @@ def run_script():
 
         with conn.cursor() as cur:
             cur.execute("SELECT data FROM stats ORDER BY id DESC LIMIT 1;")
-            last_session = cur.fetchone()[0]
+            fetched_result = cur.fetchone()
+            if fetched_result is None:
+                last_session = None
+            else:
+                last_session = fetched_result[0]
             print(last_session, "Last session")
-
-        print(current_stats, "Current session")
-
+            
         if current_stats != last_session:
             if last_session.get('Rewards:'):
                 reward_diff = dollarPtBal - last_session['Rewards:']
