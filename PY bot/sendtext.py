@@ -51,6 +51,55 @@ def run_script():
                 'Referrals:':referrals,
                 'Rewards:':dollarPtBal   
             }
+
+        with conn.cursor() as cur:
+            cur.execute("SELECT data FROM stats ORDER BY id DESC LIMIT 1;")
+            fetched_result = cur.fetchone()
+            if fetched_result is None:
+                last_session = None
+            else:
+                last_session = fetched_result[0]
+            print(last_session, "Last session")
+        
+        if last_session is not None:
+            if current_stats != last_session:
+                if last_session.get('Rewards:'):
+                    reward_diff = dollarPtBal - last_session['Rewards:']
+                    if int(reward_diff) != 0:
+                        print("Text sent!")
+                        print(reward_diff, dollarPtBal)
+                        SMS.send(message=f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}')
+
+                with conn.cursor() as cur:
+                    cur.execute("INSERT INTO stats (data) VALUES (%s);", (json.dumps(current_stats),))
+                    conn.commit()
+                    print("Updated stats\n")
+
+            else:
+                print('\n\nno update\n')
+        else:
+            print("No last session data available.")
+
+        time.sleep(1800)
+
+    global current_stats
+
+    while True:
+        dollarPtBal, referrals, todaydate = update_stats()
+        current_stats = {
+                'Date':todaydate,
+                'Referrals:':referrals,
+                'Rewards:':dollarPtBal   
+            }
+
+        with conn.cursor() as cur:
+            cur.execute("SELECT data FROM stats ORDER BY id DESC LIMIT 1;")
+            fetched_result = cur.fetchone()
+            if fetched_result is None:
+                last_session = None
+            else:
+                last_session = fetched_result[0]
+            print(last_session, "Last session")
         
         if last_session is not None:
             if current_stats != last_session:
