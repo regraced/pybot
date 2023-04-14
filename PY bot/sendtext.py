@@ -60,24 +60,25 @@ def run_script():
             else:
                 last_session = fetched_result[0]
             print(last_session, "Last session")
-            
-        if current_stats != last_session:
-            if last_session.get('Rewards:'):
-                reward_diff = dollarPtBal - last_session['Rewards:']
-                if int(reward_diff) != 0:
-                    print("Text sent!")
-                    print(reward_diff, dollarPtBal)
-                    SMS.send(message=f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}')
+        
+        if last_session is not None:
+            if current_stats != last_session:
+                if last_session.get('Rewards:'):
+                    reward_diff = dollarPtBal - last_session['Rewards:']
+                    if int(reward_diff) != 0:
+                        print("Text sent!")
+                        print(reward_diff, dollarPtBal)
+                        SMS.send(message=f'\n{"%.2f" % round(reward_diff, 2)} more in rewards, total ${"%.2f" % round(dollarPtBal, 2)}')
 
-            with conn.cursor() as cur:
-                cur.execute("INSERT INTO stats (data) VALUES (%s);", (json.dumps(current_stats),))
-                conn.commit()
-                print("Updated stats\n")
+                with conn.cursor() as cur:
+                    cur.execute("INSERT INTO stats (data) VALUES (%s);", (json.dumps(current_stats),))
+                    conn.commit()
+                    print("Updated stats\n")
 
-        else:
-            print('\n\nno update\n')
+            else:
+                print('\n\nno update\n')
 
-        time.sleep(1800)
+            time.sleep(1800)
 
 def run_flask():
     port = int(os.environ.get('PORT', 5000))
