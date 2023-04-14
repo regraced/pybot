@@ -1,3 +1,4 @@
 requests 
 SMS
+psycopg2
 Flask
