@@ -51,15 +51,6 @@ def run_script():
                 'Referrals:':referrals,
                 'Rewards:':dollarPtBal   
             }
-
-        with conn.cursor() as cur:
-            cur.execute("SELECT data FROM stats ORDER BY id DESC LIMIT 1;")
-            fetched_result = cur.fetchone()
-            if fetched_result is None:
-                last_session = None
-            else:
-                last_session = fetched_result[0]
-            print(last_session, "Last session")
         
         if last_session is not None:
             if current_stats != last_session:
