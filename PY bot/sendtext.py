@@ -2,16 +2,16 @@ import SMS
 import requests
 import json
 import time
-from datetime import date
+from datetime import datetime, date, timedelta
 import os
 import urllib.parse
 import threading
 import psycopg2
-import sys
-from flask import Flask, render_template, url_for, jsonify
+from flask import Flask, render_template, url_for, jsonify, request
 
 
 app = Flask(__name__)
+
 elephantsql_url = os.environ["DATABASE_URL"]
 url = urllib.parse.urlparse(elephantsql_url)
 db_url = f"dbname={url.path[1:]} user={url.username} password={url.password} host={url.hostname} port={url.port}"
@@ -41,24 +41,28 @@ def all_data():
     all_stats = [row[0] for row in fetched_data]
     return jsonify(all_stats)
 
-'''
-def log_to_db(message):
+@app.route("/logs", methods=["POST"])
+def receive_logs():
+    data = request.data
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO logs (timestamp, message) VALUES (%s, %s)", (date.now(), message))
+        # Delete logs that are older than 24 hours
+        yesterday = datetime.now() - timedelta(hours=24)
+        cur.execute("DELETE FROM logs WHERE created_at < %s", (yesterday,))
+        # Insert the new log into the database
+        cur.execute("INSERT INTO logs (data) VALUES (%s)", (data,))
         conn.commit()
+    return 'OK', 200
 
-def del_old_logs():
+@app.route('/logs')
+def get_logs():
+    # Query the logs table in the database
     with conn.cursor() as cur:
-        cur.execute("DELETE FROM logs WHERE timestamp < NOW() - INTERVAL '1 day'")
-        conn.commit()
+        cur.execute("SELECT data FROM logs")
+        rows = cur.fetchall()
+    # Combine all the log data into a single string
+    log_data = '\n'.join([row[0] for row in rows])
+    return log_data
 
-@app.route("/logs")
-def post_logs():
-    with conn.cursor() as cur:
-        cur.execute("SELECT * FROM logs ORDER BY timestamp DESC LIMIT 50")
-        logs = cur.fetchall()
-    return render_template("logs.html", logs=logs)
-'''
 
 def update_stats():
     url = "https://loyalty.yotpo.com/api/v1/customer_details?customer_email=lukee249%40outlook.com&customer_external_id=5755791442114&merchant_id=58315"
@@ -116,5 +120,3 @@ if __name__ == '__main__':
     script_thread = threading.Thread(target=run_script)
     script_thread.start()
     run_flask()
-    sys.stdout = sys.__stdout__
-    sys.stderr = sys.__stderr__
