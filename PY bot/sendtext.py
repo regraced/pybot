@@ -49,7 +49,7 @@ def del_old_logs():
 
 @app.route("/logs")
 def post_logs():
-    with conn.cursor as cur:
+    with conn.cursor() as cur:
         cur.execute("SELECT * FROM logs ORDER BY timestamp DESC LIMIT 50")
         logs = cur.fetchall()
     return render_template("logs.html", logs=logs)
