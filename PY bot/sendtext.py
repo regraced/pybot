@@ -74,12 +74,7 @@ def update_stats():
     return dollarPtBal, referrals, todaydate
 
 def run_script():
-    global current_stats, lawg
-
-    output = StringIO()
-
-    sys.stdout = output
-    sys.stderr = output
+    global current_stats
 
     while True:
         dollarPtBal, referrals, todaydate = update_stats()
@@ -113,13 +108,6 @@ def run_script():
 
         else:
             print('\n\nno update\n')
-        
-        output_str = output.getvalue()
-
-        lawg += output_str
-        print(lawg)
-        output.truncate(0)
-        output.seek(0)
 
         time.sleep(1800)
 
