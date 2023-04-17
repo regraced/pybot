@@ -47,9 +47,9 @@ def receive_logs():
     with conn.cursor() as cur:
         # Delete logs that are older than 24 hours
         yesterday = datetime.now() - timedelta(hours=24)
-        cur.execute("DELETE FROM 'public'.'logs' WHERE created_at < %s", (yesterday,))
+        cur.execute("DELETE FROM logs WHERE created_at < %s", (yesterday,))
         # Insert the new log into the database
-        cur.execute("INSERT INTO 'public'.'logs' (data) VALUES (%s)", (data,))
+        cur.execute("INSERT INTO logs (data) VALUES (%s)", (data,))
         conn.commit()
     return 'OK', 200
 
@@ -57,7 +57,7 @@ def receive_logs():
 def get_logs():
     # Query the logs table in the database
     with conn.cursor() as cur:
-        cur.execute("SELECT data FROM 'public'.'logs'")
+        cur.execute("SELECT data FROM logs")
         rows = cur.fetchall()
     # Combine all the log data into a single string
     log_data = '\n'.join([row[0] for row in rows])
