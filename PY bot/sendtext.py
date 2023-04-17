@@ -50,7 +50,7 @@ def receive_logs():
             yesterday = datetime.now() - timedelta(hours=24)
             cur.execute("DELETE FROM logs WHERE created_at < %s", (yesterday,))
             # Insert the new log into the database
-            cur.execute("INSERT INTO logs (data) VALUES (%s)", (data,))
+            cur.execute("INSERT INTO logs (data) VALUES (%s) LIMIT 1", (data,))
             conn.commit()
     except Exception as e:
         # Roll back the transaction in case of an error
@@ -64,7 +64,7 @@ def receive_logs():
 def get_logs():
     # Query the logs table in the database
     with conn.cursor() as cur:
-        cur.execute("SELECT data FROM logs")
+        cur.execute("SELECT data FROM logs LIMIT 1")
         rows = cur.fetchall()
     # Combine all the log data into a single string
     log_data = '\n'.join([row[0] for row in rows])
