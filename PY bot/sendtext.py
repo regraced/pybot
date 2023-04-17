@@ -7,7 +7,6 @@ import os
 import urllib.parse
 import threading
 import psycopg2
-from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, render_template, url_for, jsonify
 
 
