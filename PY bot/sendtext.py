@@ -67,8 +67,8 @@ def get_logs():
         cur.execute("SELECT data FROM logs LIMIT 1")
         rows = cur.fetchall()
     # Combine all the log data into a single string
-    log_data = '\n'.join([row[0] for row in rows])
-    return render_template("logs.html", log_data=log_data)
+    data = '\n'.join([row[0] for row in rows])
+    return render_template("logs.html", data=data)
 
 
 def update_stats():
