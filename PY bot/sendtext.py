@@ -9,6 +9,7 @@ import threading
 import psycopg2
 from io import StringIO
 import sys
+import contextlib
 from flask import Flask, render_template, url_for, jsonify
 
 
@@ -19,8 +20,6 @@ db_url = f"dbname={url.path[1:]} user={url.username} password={url.password} hos
 conn = psycopg2.connect(db_url)
 
 current_stats = None
-
-lawg = ""
 
 @app.after_request
 def add_header(response):
