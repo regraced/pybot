@@ -1,13 +1,9 @@
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Logs</title>
-  </head>
-  <body>
-    <h1>Logs</h1>
-    <ul>
-      {% for log in logs %}
-        <li>{{ log[1] }} - {{ log[2] }}</li>
-      {% endfor %}
-    </ul>
-  </body>
+</head>
+<body>
+    <pre>{{ log_data }}</pre>
+</body>
 </html>
