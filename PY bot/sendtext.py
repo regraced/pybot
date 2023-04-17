@@ -117,7 +117,7 @@ def run_script():
         output_str = output.getvalue()
 
         lawg += output_str
-
+        print(lawg)
         output.truncate(0)
         output.seek(0)
 
