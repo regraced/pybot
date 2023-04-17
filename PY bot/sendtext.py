@@ -7,6 +7,7 @@ import os
 import urllib.parse
 import threading
 import psycopg2
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, render_template, url_for, jsonify
 
 
@@ -39,6 +40,21 @@ def all_data():
 
     all_stats = [row[0] for row in fetched_data]
     return jsonify(all_stats)
+
+def log_to_db(message):
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO logs (timestamp, message) VALUES (%s, %s)", (date.now(), message))
+def del_old_logs():
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM logs WHERE timestamp < NOW() - INTERVAL '1 day'")
+
+@app.route("/logs")
+def post_logs():
+    with conn.cursor as cur:
+        cur.execute("SELECT * FROM logs ORDER BY timestamp DESC LIMIT 50")
+        logs = cur.fetchall()
+    return render_template("logs.html", logs=logs)
+    
 
 def update_stats():
     url = "https://loyalty.yotpo.com/api/v1/customer_details?customer_email=lukee249%40outlook.com&customer_external_id=5755791442114&merchant_id=58315"
