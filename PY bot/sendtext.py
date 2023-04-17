@@ -7,6 +7,8 @@ import os
 import urllib.parse
 import threading
 import psycopg2
+from io import StringIO
+import sys
 from flask import Flask, render_template, url_for, jsonify
 
 
@@ -17,6 +19,8 @@ db_url = f"dbname={url.path[1:]} user={url.username} password={url.password} hos
 conn = psycopg2.connect(db_url)
 
 current_stats = None
+
+lawg = ""
 
 @app.after_request
 def add_header(response):
@@ -40,6 +44,7 @@ def all_data():
     all_stats = [row[0] for row in fetched_data]
     return jsonify(all_stats)
 
+'''
 def log_to_db(message):
     with conn.cursor() as cur:
         cur.execute("INSERT INTO logs (timestamp, message) VALUES (%s, %s)", (date.now(), message))
@@ -56,7 +61,7 @@ def post_logs():
         cur.execute("SELECT * FROM logs ORDER BY timestamp DESC LIMIT 50")
         logs = cur.fetchall()
     return render_template("logs.html", logs=logs)
-    
+'''
 
 def update_stats():
     url = "https://loyalty.yotpo.com/api/v1/customer_details?customer_email=lukee249%40outlook.com&customer_external_id=5755791442114&merchant_id=58315"
@@ -69,7 +74,12 @@ def update_stats():
     return dollarPtBal, referrals, todaydate
 
 def run_script():
-    global current_stats
+    global current_stats, lawg
+
+    output = StringIO()
+
+    sys.stdout = output
+    sys.stderr = output
 
     while True:
         dollarPtBal, referrals, todaydate = update_stats()
@@ -103,6 +113,13 @@ def run_script():
 
         else:
             print('\n\nno update\n')
+        
+        output_str = output.getvalue()
+
+        lawg += output_str
+
+        output.truncate(0)
+        output.seek(0)
 
         time.sleep(1800)
 
@@ -114,3 +131,5 @@ if __name__ == '__main__':
     script_thread = threading.Thread(target=run_script)
     script_thread.start()
     run_flask()
+    sys.stdout = sys.__stdout__
+    sys.stderr = sys.__stderr__
