@@ -43,9 +43,12 @@ def all_data():
 def log_to_db(message):
     with conn.cursor() as cur:
         cur.execute("INSERT INTO logs (timestamp, message) VALUES (%s, %s)", (date.now(), message))
+        conn.commit()
+
 def del_old_logs():
     with conn.cursor() as cur:
         cur.execute("DELETE FROM logs WHERE timestamp < NOW() - INTERVAL '1 day'")
+        conn.commit()
 
 @app.route("/logs")
 def post_logs():
