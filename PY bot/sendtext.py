@@ -44,14 +44,21 @@ def all_data():
 @app.route("/logs", methods=["POST"])
 def receive_logs():
     data = request.data
-    with conn.cursor() as cur:
-        # Delete logs that are older than 24 hours
-        yesterday = datetime.now() - timedelta(hours=24)
-        cur.execute("DELETE FROM logs WHERE created_at < %s", (yesterday,))
-        # Insert the new log into the database
-        cur.execute("INSERT INTO logs (data) VALUES (%s)", (data,))
-        conn.commit()
+    try:
+        with conn.cursor() as cur:
+            # Delete logs that are older than 24 hours
+            yesterday = datetime.now() - timedelta(hours=24)
+            cur.execute("DELETE FROM logs WHERE created_at < %s", (yesterday,))
+            # Insert the new log into the database
+            cur.execute("INSERT INTO logs (data) VALUES (%s)", (data,))
+            conn.commit()
+    except Exception as e:
+        # Roll back the transaction in case of an error
+        conn.rollback()
+        print(f"Error: {e}")
+        return "Error", 500
     return 'OK', 200
+
 
 @app.route('/logs')
 def get_logs():
